@@ -1,10 +1,19 @@
 import { GoogleGenAI } from "@google/genai";
 import { SubmissionRecord, AgeGroup } from '../types';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Helper to safely get the AI client
+const getAiClient = () => {
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
+    throw new Error("API Key is missing. Please configure it in your Vercel project settings.");
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
 export const analyzeGenderData = async (records: SubmissionRecord[]): Promise<string> => {
   try {
+    const ai = getAiClient(); // Initialize here instead of top-level
+    
     // 1. Aggregating data for the prompt to keep it concise
     const summary = records.reduce((acc, record) => {
       record.data.forEach(d => {
@@ -49,8 +58,8 @@ export const analyzeGenderData = async (records: SubmissionRecord[]): Promise<st
 
     return response.text || "No analysis could be generated at this time.";
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini analysis failed:", error);
-    return "An error occurred while generating the AI analysis. Please check your API key and try again.";
+    return `Analysis Failed: ${error.message || "Unknown error"}. Please check your API key configuration.`;
   }
 };
