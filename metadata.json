@@ -1,0 +1,5 @@
+{
+  "name": "GADBase - Gender & Development Analytics",
+  "description": "A comprehensive database and analytics platform for Gender and Development (GAD) tracking. Features distinct portals for office inputers and administrators, real-time data visualization, and AI-powered demographic insights.",
+  "requestFramePermissions": []
+}
